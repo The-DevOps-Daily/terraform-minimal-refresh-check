@@ -4,3 +4,6 @@
 Prediction: run 1 about 9.5 s, run 2 about 60 s. If DigitalOcean answered with 429 and retry-after, the log shows
 at least one "retrying in" message and at least one 429 status line, and the longest silent gap is about 50 s.
 If neither appears, the wait happened without a logged retry and the 429 explanation is not supported.
+# outcome (burst-log-20261029T132653Z, added after the run): run 1 9.6 s, run 2 59.7 s; 10 "retrying in 51s" messages with
+# status 429 and a 50.0 s silent gap, as predicted. The prediction was wrong about one detail: no 429 status line appeared
+# in the request log, because the request logger only sees the final 200 response.

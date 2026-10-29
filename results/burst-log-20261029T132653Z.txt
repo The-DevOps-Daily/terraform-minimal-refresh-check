@@ -1,0 +1,15 @@
+# burst-log.sh sha256=1e89eaecfd2f Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T13:26:53Z
+burst/full/1	9.6	202	202	0	none	none
+  responses: {'200 OK': 110}; latency median 0.01 s, max 0.43 s, requests over 5 s: 0
+  slowest: 0.4s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
+  all status lines: {'200': 202}; retry messages: 0; longest silent gap in the log: 0.9 s
+  ratelimit-remaining seen: first [2021], last [1820], min 1820
+burst/full/2	59.7	202	202	0	none	none
+  responses: {'200 OK': 108}; latency median 0.01 s, max 50.22 s, requests over 5 s: 1
+  slowest: 50.2s HTTP/2.0 200 OK; 0.4s HTTP/2.0 200 OK; 0.3s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
+  all status lines: {'200': 202}; retry messages: 10; longest silent gap in the log: 50.0 s
+  retry: digitalocean.com/v2/domains/tf-refresh-lab.devops-daily.com/records/1836867618 (status: 429): retrying in 51s (4 left)
+  retry: digitalocean.com/v2/domains/tf-refresh-lab.devops-daily.com/records/1836867807 (status: 429): retrying in 51s (4 left)
+  retry: digitalocean.com/v2/domains/tf-refresh-lab.devops-daily.com/records/1836867744 (status: 429): retrying in 51s (4 left)
+  ratelimit-remaining seen: first [1819], last [1608], min 1608
+# ended=2026-10-29T13:29:13Z

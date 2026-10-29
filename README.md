@@ -19,7 +19,7 @@ Requires Terraform 1.17.0 or later (`TF=/path/to/terraform` to pick a binary) an
 - `plan.sh <label> [args]` runs one `terraform plan` with `TF_LOG=DEBUG` (the provider prints each API request only at that level) and prints the time, the GET count, all requests, the number of `429 Too Many Requests` responses, and every resource the plan would change.
 - `bench.sh` was the first benchmark. It ran each plan twice back to back, which pushed full plans past DigitalOcean's 250 requests per minute; its request counts are valid, its timings are not (see the note in its result file).
 - `bench2.sh` waits 65 seconds before every full plan and then runs three full plans back to back to show the rate limit on purpose. (Its logging-cost step was broken: unsetting `TF_LOG` still logged.)
-- `burst-log.sh` runs two full plans back to back with the log kept and reports response statuses, the longest stretch between a logged request and the next logged response, and the rate-limit headers, without saving the raw log. Its request/response pairing is a heuristic (parallel requests interleave in the log), so read its per-request numbers as gaps in the log, not latencies.
+- `burst-log.sh` runs two full plans back to back with the log kept and reports response statuses, the longest stretch between a logged request and the next logged response, and the rate-limit headers, without saving the raw log. It also counts every status line and every go-retryablehttp retry message and reports the longest silent gap in the log. Its request/response pairing is a heuristic (parallel requests interleave in the log), so read the per-request numbers as gaps, not latencies.
 - `drift.sh` deletes `r[42]`, sets the TTL of `r[43]` and of `pointer` to 60 through the API, then plans with and without `-minimal-refresh`, with a config change on `r[0]`, in refresh-only mode, and as destroy plans.
 - `teardown.sh` deletes everything; `MINIMAL=1` does it with `apply -destroy -minimal-refresh` and records the result.
 
@@ -37,7 +37,7 @@ Terraform 1.17.0, provider digitalocean 2.106.0, a Raspberry Pi 3 B+ (1 GB RAM),
 | `-refresh=false` | 0 | 4.5 s | nothing |
 | 2nd and 3rd full plan within a minute | 202 each | 60.4 s, 60.6 s | nothing |
 
-`bench2-20261029T114834Z.tsv`, three runs each; the quiet full-refresh plans had a 65 s pause before them (the burst rows ran back to back on purpose), and the `-minimal-refresh` and `-refresh=false` plans ran right after. In the slow back-to-back plan the debug log has a 50-second stretch with no responses at all (`burst-log-20261029T120706Z.txt`), and no 429 is logged. That is consistent with DigitalOcean's 250 requests per minute limit and retries below the provider's request logger (see SOURCES.md); the log alone does not prove which response was retried.
+`bench2-20261029T114834Z.tsv`, three runs each; the quiet full-refresh plans had a 65 s pause before them (the burst rows ran back to back on purpose), and the `-minimal-refresh` and `-refresh=false` plans ran right after. In the slow back-to-back plan (`burst-log-20261029T132653Z.txt`), ten requests got a `429` from DigitalOcean and go-retryablehttp logged `(status: 429): retrying in 51s (4 left)` for each; the log then went quiet for 50.0 s. Every HTTP status line in the provider's request log was a `200`, because that logger wraps the retry client and sees only the final response (see SOURCES.md). So when a plan is slow, search `TF_LOG` output for `retrying in`, not for `429` status lines. DigitalOcean allows 250 requests per minute; two full plans of 202 requests each go over it.
 
 After deleting `r[42]` and setting the TTL of `r[43]` and `pointer` to 60 out of band (`drift-20261029T124036Z.tsv`):
 
@@ -53,4 +53,4 @@ After deleting `r[42]` and setting the TTL of `r[43]` and `pointer` to 60 out of
 
 `apply -destroy -minimal-refresh` then succeeded with "202 destroyed" (`teardown-20261029T124712Z.txt`): the DigitalOcean provider treats a 404 on delete as already deleted. A provider that does not would fail there.
 
-The first benchmark (`bench-20261029T113954Z.tsv`) and the first drift run (`drift-20261029T115919Z.tsv`) are kept with a note on their second line explaining what was wrong with them. 
+Discarded runs are kept with a note on their second line explaining what was wrong with them: the first benchmark, the first drift run, the first burst-log (no retry check yet) and two burst-log attempts against an empty or partial state. 

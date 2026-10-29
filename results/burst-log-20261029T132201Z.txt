@@ -1,0 +1,13 @@
+# burst-log.sh sha256=1e89eaecfd2f Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T13:22:01Z
+# NOTE: discarded run, kept as evidence. Only 117 of 202 resources existed: a manual terraform apply had been piped into head and was killed by SIGPIPE part-way. Two plans of 117 GETs each (234 requests) stayed under 250/minute, so it says nothing about the slowdown. Restored from the session log; the rerun is the next burst-log file. The plan rows were cut at 300 characters in that log.
+burst/full/1	6.9	117	117	0	digitalocean_record.pointer:create,digitalocean_record.r[2]:create,digitalocean_record.r[4]:create,digitalocean_record.r[6]:create,digitalocean_record.r[7]:create,digitalocean_record.r[12]:create,digitalocean_record.r[15]:create,digitalocean_record.r[22]:create,digitalocea
+  responses: {'200 OK': 59}; latency median 0.01 s, max 0.42 s, requests over 5 s: 0
+  slowest: 0.4s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
+  all status lines: {'200': 117}; retry messages: 0; longest silent gap in the log: 0.9 s
+  ratelimit-remaining seen: first [2904], last [2796], min 2796
+burst/full/2	6.8	117	117	0	digitalocean_record.pointer:create,digitalocean_record.r[2]:create,digitalocean_record.r[4]:create,digitalocean_record.r[6]:create,digitalocean_record.r[7]:create,digitalocean_record.r[12]:create,digitalocean_record.r[15]:create,digitalocean_record.r[22]:create,digitalocea
+  responses: {'200 OK': 53}; latency median 0.01 s, max 0.38 s, requests over 5 s: 0
+  slowest: 0.4s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
+  all status lines: {'200': 117}; retry messages: 0; longest silent gap in the log: 0.9 s
+  ratelimit-remaining seen: first [2787], last [2678], min 2678
+# ended=2026-10-29T13:23:25Z
