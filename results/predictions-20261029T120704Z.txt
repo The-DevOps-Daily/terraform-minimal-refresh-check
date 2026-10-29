@@ -20,3 +20,6 @@ drift rerun (fresh setup, fixed PATCH, resource_drift recorded):
   minimal/r0-changed    r[0] update only; pointer drift not seen
   refresh-only          drift lists r[42], r[43], pointer
   destroy/full 201, destroy/minimal 202
+
+teardown MINIMAL=1 (after the drift rerun, r[42] already gone): the provider treats a 404 on delete as already deleted
+  (resourceDigitalOceanRecordDelete), so the destroy succeeds and reports 202 destroyed, one of them a record that no longer existed.
