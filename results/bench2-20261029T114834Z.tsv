@@ -1,0 +1,20 @@
+# bench2.sh sha256=51fa061796e2 Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T11:48:35Z
+label	seconds	gets	requests	429s	changes
+quiet/full/no-change/1	9.5	202	202	0	none
+quiet/minimal/no-change/1	4.3	0	0	0	none
+quiet/minimal/one-change/1	4.9	1	1	0	digitalocean_record.r[7]:update
+quiet/norefresh/no-change/1	4.5	0	0	0	none
+quiet/full/no-change/2	9.5	202	202	0	none
+quiet/minimal/no-change/2	4.2	0	0	0	none
+quiet/minimal/one-change/2	4.4	1	1	0	digitalocean_record.r[7]:update
+quiet/norefresh/no-change/2	4.5	0	0	0	none
+quiet/full/no-change/3	9.1	202	202	0	none
+quiet/minimal/no-change/3	4.3	0	0	0	none
+quiet/minimal/one-change/3	4.5	1	1	0	digitalocean_record.r[7]:update
+quiet/norefresh/no-change/3	4.4	0	0	0	none
+logcost/full/no-log	9.3	202	202	0	none
+logcost/full/log	9.3	202	202	0	none
+burst/full/no-change/1	9.4	202	202	0	none
+burst/full/no-change/2	60.4	202	202	0	none
+burst/full/no-change/3	60.6	202	202	0	none
+# ended=2026-10-29T11:59:19Z

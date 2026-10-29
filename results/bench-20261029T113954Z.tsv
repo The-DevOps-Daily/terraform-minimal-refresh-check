@@ -1,5 +1,4 @@
 # bench.sh sha256=6c4277a39d5f Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T11:39:54Z
-# NOTE: confounded run. plan.sh ran every plan twice (timed, then logged), so full plans sent ~400 requests within a minute against DigitalOcean's 250/minute limit; the timings mix 429 backoff with refresh work. The GET counts are valid. See bench2-*.tsv for clean timings.
 label	seconds	gets	requests	changes
 full/no-change/1	62.2	202	202	none
 full/one-change/1	9.3	202	202	digitalocean_record.r[7]:update

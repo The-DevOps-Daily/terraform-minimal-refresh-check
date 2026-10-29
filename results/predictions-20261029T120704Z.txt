@@ -1,0 +1,22 @@
+# written after bench2-20261029T114834Z and drift-20261029T115919Z, before burst-log.sh and the drift rerun.
+
+What the first runs showed against the earlier predictions:
+  - GET counts: as predicted (202 full, 0 minimal no-change, 1 minimal one-change, 0 -refresh=false).
+  - quiet timings: full 9.1-9.5 s, minimal 4.2-4.9 s, -refresh=false 4.4-4.5 s (predicted 9-16 s and 4-5 s).
+  - burst: the 2nd and 3rd back-to-back full plans took 60.4 and 60.6 s, as predicted, but with 0 logged 429s and no extra
+    GETs, which the prediction ("429 responses appear") got wrong.
+  - logcost row is invalid: PLAN_LOG= still logged (202 GETs counted), so both rows were logged runs.
+  - drift-20261029T115919Z: the pointer TTL PATCH failed with 422 ("Data needs to end with a dot") so the dependent-resource
+    case was not tested; refresh-only showed 0 changes because drift is reported in resource_drift, which plan.sh did not read.
+
+burst-log.sh (two back-to-back full plans, logs analysed):
+  run 1 about 9.5 s; run 2 about 60 s. Prediction: most of run 2's extra time sits in a small number of requests that each
+  wait tens of seconds for a response (server-side throttling), not in many slow requests; no 429 lines.
+
+drift rerun (fresh setup, fixed PATCH, resource_drift recorded):
+  full/no-change        r[42] create, r[43] update, pointer update; drift lists all three
+  minimal/no-change     no changes, no drift
+  full/r0-changed       r[0] update + the three drifted resources
+  minimal/r0-changed    r[0] update only; pointer drift not seen
+  refresh-only          drift lists r[42], r[43], pointer
+  destroy/full 201, destroy/minimal 202
