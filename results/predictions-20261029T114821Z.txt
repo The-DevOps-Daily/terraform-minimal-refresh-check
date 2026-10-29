@@ -1,0 +1,12 @@
+# written after bench-20261029T113954Z (GET counts matched: 202 / 0 / 1 / 0; timings confounded by the
+# 250 requests/minute limit) and before drift.sh and bench2.sh ran.
+
+bench2.sh:
+  quiet/full/no-change     202 GETs, 0 x 429, roughly 9 to 16 s
+  quiet/minimal/*          0 GETs (no-change) and 1 GET (one-change), about 4 to 5 s, 0 x 429
+  quiet/norefresh          0 GETs, about the same time as minimal
+  logcost                  logging adds well under 20 % to a full plan
+  burst/full 1..3          the first is like quiet; by the second or third, 429 responses appear and the plan takes much longer (tens of seconds)
+
+drift.sh: as in the first predictions file (full plans see r[42], r[43] and pointer drift; minimal/no-change sees nothing;
+  minimal/r0-changed shows only r[0]; destroy/minimal plans 202 deletes vs 201 for destroy/full), with 0 x 429 thanks to the cool-down.
