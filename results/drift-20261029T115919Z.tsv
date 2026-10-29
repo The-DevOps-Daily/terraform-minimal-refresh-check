@@ -1,4 +1,5 @@
 # drift.sh sha256=51fa061796e2 Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T11:59:19Z
+# NOTE: superseded by drift-20261029T124036Z. The pointer PATCH failed (422, "Data needs to end with a dot"), so the dependent-resource case did not run, and plan.sh did not yet record resource_drift, so refresh-only shows 0 changes here.
 # out of band: DELETE r[42] -> 204, PATCH r[43] ttl=60 -> 200, PATCH pointer ttl=60 -> 422
 label	seconds	gets	requests	429s	changes
 full/no-change	9.6	202	202	0	digitalocean_record.r[42]:create,digitalocean_record.r[43]:update

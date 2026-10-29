@@ -1,4 +1,5 @@
 # bench2.sh sha256=51fa061796e2 Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T11:48:35Z
+# NOTE: the logcost rows are invalid: PLAN_LOG= still produced a debug log (202 GETs counted), so both rows were logged runs.
 label	seconds	gets	requests	429s	changes
 quiet/full/no-change/1	9.5	202	202	0	none
 quiet/minimal/no-change/1	4.3	0	0	0	none

@@ -1,0 +1,7 @@
+# teardown.sh MINIMAL=1 sha256=6b44829ff9e4 Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200
+exit=0
+  # digitalocean_record.r[196] will be destroyed
+  # digitalocean_record.r[197] will be destroyed
+  # digitalocean_record.r[198] will be destroyed
+  # digitalocean_record.r[199] will be destroyed
+Apply complete! Resources: 0 added, 0 changed, 202 destroyed.

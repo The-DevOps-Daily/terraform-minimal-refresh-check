@@ -1,0 +1,10 @@
+# burst-log.sh sha256=0c778a61c239 Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T12:07:07Z
+burst/full/1	9.6	202	202	0	digitalocean_record.r[42]:create,digitalocean_record.r[43]:update	digitalocean_record.r[42]:delete,digitalocean_record.r[43]:update
+  responses: {'200 OK': 113, '404 Not Found': 1}; latency median 0.01 s, max 0.48 s, requests over 5 s: 0
+  slowest: 0.5s HTTP/2.0 200 OK; 0.4s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
+  ratelimit-remaining seen: first [417], last [216], min 216
+burst/full/2	59.3	202	202	0	digitalocean_record.r[42]:create,digitalocean_record.r[43]:update	digitalocean_record.r[42]:delete,digitalocean_record.r[43]:update
+  responses: {'200 OK': 106, '404 Not Found': 1}; latency median 0.02 s, max 50.14 s, requests over 5 s: 1
+  slowest: 50.1s HTTP/2.0 404 Not Found; 0.4s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
+  ratelimit-remaining seen: first [215], last [4], min 4
+# ended=2026-10-29T12:09:25Z
