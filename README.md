@@ -11,7 +11,7 @@ scripts/drift.sh      # change three records behind Terraform's back, then see w
 scripts/teardown.sh   # delete everything
 ```
 
-Requires Terraform 1.17.0 or later (`TF=/path/to/terraform` to pick a binary) and about 3,000 of DigitalOcean's 5,000 API requests per hour for one full pass. Write-up: [Terraform 1.17's -minimal-refresh, measured](https://devops-daily.com/posts/terraform-1-17-minimal-refresh-measured).
+Requires Terraform 1.17.0 or later (`TF=/path/to/terraform` to pick a binary) and headroom in DigitalOcean's 5,000 API requests per hour: a full plan sends about 202, and `bench2.sh` alone runs eight of them. Write-up: [Terraform 1.17's -minimal-refresh, measured](https://devops-daily.com/posts/terraform-1-17-minimal-refresh-measured).
 
 ## What each script does
 
@@ -37,7 +37,7 @@ Terraform 1.17.0, provider digitalocean 2.106.0, a Raspberry Pi 3 B+ (1 GB RAM),
 | `-refresh=false` | 0 | 4.5 s | nothing |
 | 2nd and 3rd full plan within a minute | 202 each | 60.4 s, 60.6 s | nothing |
 
-`bench2-20261029T114834Z.tsv`, three runs each; every full plan had a 65 s pause before it, the `-minimal-refresh` and `-refresh=false` plans ran right after. In the slow back-to-back plan the debug log has a 50-second stretch with no responses at all (`burst-log-20261029T120706Z.txt`), and no 429 is logged. That is consistent with DigitalOcean's 250 requests per minute limit and retries below the provider's request logger (see SOURCES.md); the log alone does not prove which response was retried.
+`bench2-20261029T114834Z.tsv`, three runs each; the quiet full-refresh plans had a 65 s pause before them (the burst rows ran back to back on purpose), and the `-minimal-refresh` and `-refresh=false` plans ran right after. In the slow back-to-back plan the debug log has a 50-second stretch with no responses at all (`burst-log-20261029T120706Z.txt`), and no 429 is logged. That is consistent with DigitalOcean's 250 requests per minute limit and retries below the provider's request logger (see SOURCES.md); the log alone does not prove which response was retried.
 
 After deleting `r[42]` and setting the TTL of `r[43]` and `pointer` to 60 out of band (`drift-20261029T124036Z.tsv`):
 

@@ -30,7 +30,7 @@ Excerpts behind the claims in the README and the write-up that the lab does not 
 
 ## DigitalOcean API
 
-[API description, "Rate Limit"](https://github.com/digitalocean/openapi/blob/main/specification/description.yml):
+[API description, "Rate Limit"](https://github.com/digitalocean/openapi/blob/79e5c87f46291271df945e1094817144cac2f827/specification/description.yml) (commit 79e5c87):
 
 > Requests through the API are rate limited per OAuth token. Current rate limits:
 > * 5,000 requests per hour
@@ -40,14 +40,47 @@ Excerpts behind the claims in the README and the write-up that the lab does not 
 
 ## DigitalOcean Terraform provider, v2.106.0
 
-[digitalocean/config/config.go](https://github.com/digitalocean/terraform-provider-digitalocean/blob/v2.106.0/digitalocean/config/config.go), lines 81-106: when `http_retry_max` is above 0 the godo client is built with `godo.WithRetryAndBackoffs(retryConfig)`, and afterwards the request logger wraps that client's transport:
+[digitalocean/config/config.go](https://github.com/digitalocean/terraform-provider-digitalocean/blob/v2.106.0/digitalocean/config/config.go), lines 79-106: the godo client is built with retries (and a retry logger), and afterwards the request logger wraps that client's transport:
 
 ```go
-clientTransport := logging.NewTransport("DigitalOcean", godoClient.HTTPClient.Transport)
-godoClient.HTTPClient.Transport = clientTransport
+	client = oauth2.NewClient(context.Background(), tokenSrc)
+
+	if c.HTTPRetryMax > 0 {
+		retryConfig := godo.RetryConfig{
+			RetryMax:     c.HTTPRetryMax,
+			RetryWaitMin: godo.PtrTo(c.HTTPRetryWaitMin),
+			RetryWaitMax: godo.PtrTo(c.HTTPRetryWaitMax),
+			Logger:       log.Default(),
+		}
+
+		godoOpts = []godo.ClientOpt{godo.WithRetryAndBackoffs(retryConfig)}
+	}
+
+	godoOpts = append(godoOpts, godo.SetUserAgent(userAgent))
+
+	if c.RequestsPerSecond > 0.0 {
+		godoOpts = append(godoOpts, godo.SetStaticRateLimit(c.RequestsPerSecond))
+	}
+
+	godoClient, err := godo.New(client, godoOpts...)
+
+	// TODO: logging.NewTransport is deprecated and should be replaced with
+	// logging.NewTransportWithRequestLogging.
+	//
+	//nolint:staticcheck
+	clientTransport := logging.NewTransport("DigitalOcean", godoClient.HTTPClient.Transport)
+
+	godoClient.HTTPClient.Transport = clientTransport
 ```
 
-[digitalocean/provider.go](https://github.com/digitalocean/terraform-provider-digitalocean/blob/v2.106.0/digitalocean/provider.go): defaults `http_retry_max` 4, `http_retry_wait_min` 1.0, `http_retry_wait_max` 30.0, `requests_per_second` 0.0.
+[digitalocean/provider.go](https://github.com/digitalocean/terraform-provider-digitalocean/blob/v2.106.0/digitalocean/provider.go), lines 83-106 (defaults):
+
+```go
+"requests_per_second": { ... DefaultFunc: schema.EnvDefaultFunc("DIGITALOCEAN_REQUESTS_PER_SECOND", 0.0) },
+"http_retry_max":      { ... DefaultFunc: schema.EnvDefaultFunc("DIGITALOCEAN_HTTP_RETRY_MAX", 4) },
+"http_retry_wait_min": { ... DefaultFunc: schema.EnvDefaultFunc("DIGITALOCEAN_HTTP_RETRY_WAIT_MIN", 1.0) },
+"http_retry_wait_max": { ... DefaultFunc: schema.EnvDefaultFunc("DIGITALOCEAN_HTTP_RETRY_WAIT_MAX", 30.0) },
+```
 
 [digitalocean/domain/resource_record.go](https://github.com/digitalocean/terraform-provider-digitalocean/blob/v2.106.0/digitalocean/domain/resource_record.go), `resourceDigitalOceanRecordDelete`:
 
