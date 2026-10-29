@@ -1,0 +1,19 @@
+# written before setup.sh, bench.sh and drift.sh ran. 200 TXT records + 1 CNAME + 1 zone = 202 resources.
+# Source for the behaviour: Terraform 1.17.0 release notes and hashicorp/terraform PR #38953.
+
+bench.sh (no out-of-band changes):
+  full/no-change        about 202 GETs (one per resource), no changes, slowest
+  full/one-change       about 202 GETs, 1 change: r[7] update
+  minimal/no-change     0 to 2 GETs (no resource has a proposed change, so none is refreshed), no changes
+  minimal/one-change    a few GETs (r[7] is planned, refreshed, planned again), 1 change: r[7] update
+  norefresh/*           0 GETs; same changes as minimal
+  time: full clearly slower than minimal; minimal close to norefresh
+
+drift.sh (r[42] deleted, r[43] TTL 60, pointer TTL 60, all out of band):
+  full/no-change        r[42] create, r[43] update, pointer update
+  minimal/no-change     no changes (the drift is invisible)
+  full/r0-changed       r[0] update + the three drifted resources
+  minimal/r0-changed    r[0] update only; pointer depends on r[0] but is not refreshed, so its TTL drift stays hidden
+  refresh-only          reports the drift
+  destroy/full          201 deletes (refresh drops the missing r[42] from state)
+  destroy/minimal       202 deletes: destroy plans skip the refresh with this flag, so it still plans to delete r[42], which no longer exists
