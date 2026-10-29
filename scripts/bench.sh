@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Plan time and API requests: full refresh vs -minimal-refresh vs -refresh=false,
+# The first benchmark (kept for its result file). Its timings were confounded by
+# the rate limit; use bench2.sh. Plan time and API requests: full refresh vs
+# -minimal-refresh vs -refresh=false,
 # with no config change and with one record changed in config.
 . "$(dirname "$0")/env.sh"
 out="$RESULTS/bench-$(date -u +%Y%m%dT%H%M%SZ).tsv"
 echo "# bench.sh $(stamp) started=$(date -u +%FT%TZ)" > "$out"
-printf 'label\tseconds\tgets\trequests\tchanges\n' >> "$out"
+printf 'label\tseconds\tgets\trequests\t429s\tchanges\tdrift\n' >> "$out"
 for run in 1 2; do
   for mode in full minimal norefresh; do
     case $mode in full) flag=() ;; minimal) flag=(-minimal-refresh) ;; norefresh) flag=(-refresh=false) ;; esac
