@@ -1,0 +1,6 @@
+# written before the second burst-log.sh run (fresh setup, then two back-to-back full plans, then teardown).
+# Question: during the slow second plan, did go-retryablehttp retry (it logs through log.Default(), which the
+# provider passes in config.go, so retries should appear in TF_LOG output), or did a response simply take ~50 s?
+Prediction: run 1 about 9.5 s, run 2 about 60 s. If DigitalOcean answered with 429 and retry-after, the log shows
+at least one "retrying in" message and at least one 429 status line, and the longest silent gap is about 50 s.
+If neither appears, the wait happened without a logged retry and the 429 explanation is not supported.

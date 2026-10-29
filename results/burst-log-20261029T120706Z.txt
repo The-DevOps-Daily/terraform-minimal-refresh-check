@@ -1,4 +1,5 @@
 # burst-log.sh sha256=0c778a61c239 Terraform v1.17.0 zone=tf-refresh-lab.devops-daily.com records=200 started=2026-10-29T12:07:07Z
+# NOTE: "latency" here is the time from the last logged request to the next logged response (a heuristic: parallel requests interleave in the log), so read the 50.14 s as a 50-second stretch with no logged response, not one request's latency. This run did not look for go-retryablehttp retry messages; burst-log-*.txt from the later run does.
 burst/full/1	9.6	202	202	0	digitalocean_record.r[42]:create,digitalocean_record.r[43]:update	digitalocean_record.r[42]:delete,digitalocean_record.r[43]:update
   responses: {'200 OK': 113, '404 Not Found': 1}; latency median 0.01 s, max 0.48 s, requests over 5 s: 0
   slowest: 0.5s HTTP/2.0 200 OK; 0.4s HTTP/2.0 200 OK; 0.2s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK; 0.1s HTTP/2.0 200 OK
